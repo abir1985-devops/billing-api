@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from app.db.session import db_ping
+from app.api.routes.subscriptions import router as subscriptions_router
+from app.api.routes.invoices import router as invoices_router
 
 app = FastAPI(title="Billing API", version="0.1.0")
 
@@ -14,3 +16,5 @@ def health_db():
     db_ping()
     return {"database": "ok"}
 
+app.include_router(subscriptions_router)
+app.include_router(invoices_router)
