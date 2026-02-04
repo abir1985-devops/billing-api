@@ -57,54 +57,47 @@ A subscription links a customer to a plan and automatically generates invoices f
 ### Start the application
 ```bash
 docker compose up --build
-
----
+```
 
 ### API access
-
-API base URL: http://localhost:8000
-
-Swagger UI: http://localhost:8000/docs
-
-Health check: http://localhost:8000/health
+- API base URL: `http://localhost:8000`
+- Swagger UI: `http://localhost:8000/docs`
+- Health check: `http://localhost:8000/health`
 
 ---
 
-### Example flow
+## 🔍 Example flow
 
-Create a customer
-
-Create a subscription plan
-
-Create a subscription for the customer
-
-An invoice is automatically generated
-
-List invoices by customer
+1. Create a customer
+2. Create a subscription plan
+3. Create a subscription for the customer
+4. An invoice is automatically generated
+5. List invoices by customer
 
 All steps can be tested directly via Swagger UI.
 
 ---
 
-### Database migrations
+## 🧪 Database migrations
 
 Generate a new migration:
-
+```bash
 docker compose run --rm api alembic revision --autogenerate -m "migration message"
+```
 
-### Apply migrations:
-
+Apply migrations:
+```bash
 docker compose run --rm api alembic upgrade head
+```
 
 ---
 
-###Design decisions
+## 🧠 Design decisions
 
 - UUIDs are used as primary keys for public-safe identifiers
+- Integer cents are used for monetary values to avoid floating-point errors
+- Subscription and invoice creation happens in a single database transaction
+- A fixed 30-day billing period is used for simplicity in the initial version
 
-- Integer cents are used for monetary values (avoids floating-point errors)
-
-- Single transaction for subscription + invoice creation
-
-- 30-day billing period used for simplicity in v1
+---
 
