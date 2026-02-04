@@ -58,6 +58,8 @@ A subscription links a customer to a plan and automatically generates invoices f
 ```bash
 docker compose up --build
 
+---
+
 ### API access
 
 API base URL: http://localhost:8000
@@ -66,6 +68,7 @@ Swagger UI: http://localhost:8000/docs
 
 Health check: http://localhost:8000/health
 
+---
 
 ### Example flow
 
@@ -81,6 +84,7 @@ List invoices by customer
 
 All steps can be tested directly via Swagger UI.
 
+---
 
 ### Database migrations
 
@@ -91,6 +95,8 @@ docker compose run --rm api alembic revision --autogenerate -m "migration messag
 ### Apply migrations:
 
 docker compose run --rm api alembic upgrade head
+
+---
 
 ###Design decisions
 
