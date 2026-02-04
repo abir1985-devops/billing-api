@@ -1,8 +1,23 @@
 # Billing API
 
-A backend service for subscription-based billing, built with FastAPI and PostgreSQL.
+A backend service for subscription-based billing, built with **FastAPI** and **PostgreSQL**.
 
-This project demonstrates how to design and implement a real-world backend system with customers, plans, subscriptions, and invoices, using modern Python tooling and containerized infrastructure.
+This project demonstrates how to design and implement a real-world backend system with customers, plans, subscriptions, and invoices, using modern Python tooling and **containerized infrastructure**, both **locally** and **in the cloud (AWS)**.
+
+---
+
+## 🚀 Live Demo (AWS EC2)
+
+The application is currently deployed on **AWS EC2** and publicly accessible.
+
+- **Swagger UI:**  
+  http://16.171.172.53:8000/docs
+
+- **Health check:**  
+  http://16.171.172.53:8000/health
+
+> ⚠️ This is a demo environment for learning and evaluation purposes.  
+> The public IP may change if the EC2 instance is restarted.
 
 ---
 
@@ -12,10 +27,11 @@ This project demonstrates how to design and implement a real-world backend syste
 - Subscription plans (monthly billing)
 - Subscriptions with business rules:
   - One active subscription per customer
-- Automatic invoice generation on subscription creation
+  - Automatic invoice generation on subscription creation
 - Relational data model with PostgreSQL
 - Database migrations with Alembic
-- Containerized development environment
+- Containerized development and deployment
+- Cloud deployment on AWS EC2
 
 ---
 
@@ -31,9 +47,11 @@ This project demonstrates how to design and implement a real-world backend syste
 - PostgreSQL
 - Alembic migrations
 
-### DevOps
+### DevOps / Infrastructure
 - Docker
 - Docker Compose
+- AWS EC2 (Amazon Linux)
+- Linux networking & security groups
 
 ---
 
@@ -60,9 +78,37 @@ docker compose up --build
 ```
 
 ### API access
-- API base URL: `http://localhost:8000`
-- Swagger UI: `http://localhost:8000/docs`
-- Health check: `http://localhost:8000/health`
+- API base URL: http://localhost:8000
+- Swagger UI: http://localhost:8000/docs
+- Health check: http://localhost:8000/health
+
+---
+
+## ☁️ Deployment (AWS EC2)
+
+This project is deployed on an **AWS EC2 instance** using Docker and Docker Compose.
+
+### Architecture
+- AWS EC2 (Amazon Linux)
+- Docker & Docker Compose
+- FastAPI API container
+- PostgreSQL container with persistent volume
+- Private Docker network between services
+
+### Deployment overview
+1. Provisioned an EC2 instance and configured security groups (SSH + API port).
+2. Installed Docker and Docker Compose on the server.
+3. Built and ran the application using a production Docker Compose configuration.
+4. PostgreSQL runs internally and is not exposed publicly.
+5. API is exposed via the EC2 public IP on port `8000`.
+
+### Running services
+- `api` – FastAPI application served by Uvicorn
+- `postgres` – PostgreSQL database with persistent storage
+
+### Health & documentation
+- Health endpoint: `GET /health`
+- Swagger UI: `/docs`
 
 ---
 
@@ -74,18 +120,18 @@ docker compose up --build
 4. An invoice is automatically generated
 5. List invoices by customer
 
-All steps can be tested directly via Swagger UI.
+All steps can be tested directly via **Swagger UI**.
 
 ---
 
 ## 🧪 Database migrations
 
-Generate a new migration:
+### Generate a new migration
 ```bash
 docker compose run --rm api alembic revision --autogenerate -m "migration message"
 ```
 
-Apply migrations:
+### Apply migrations
 ```bash
 docker compose run --rm api alembic upgrade head
 ```
@@ -100,4 +146,3 @@ docker compose run --rm api alembic upgrade head
 - A fixed 30-day billing period is used for simplicity in the initial version
 
 ---
-
