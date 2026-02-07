@@ -39,6 +39,7 @@ jobs:
 
       - name: Run tests
         env:
+          PYTHONPATH: .
           DATABASE_URL: postgresql+psycopg://billing_user:billing_pass@localhost:5432/billing
         run: |
           pytest -q
