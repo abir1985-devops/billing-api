@@ -1,8 +1,10 @@
 name: Build and push Docker image (GHCR)
 
 on:
-  push:
-    branches: ["main"]
+  workflow_run:
+    workflows: ["Tests"]
+    types:
+      - completed
   workflow_dispatch:
 
 permissions:
@@ -11,6 +13,7 @@ permissions:
 
 jobs:
   build-and-push:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }} 
     runs-on: ubuntu-latest
 
     steps:
