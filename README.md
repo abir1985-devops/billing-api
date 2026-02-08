@@ -1,148 +1,103 @@
 # Billing API
 
-A backend service for subscription-based billing, built with **FastAPI** and **PostgreSQL**.
+A backend service for subscription-based billing, built with FastAPI and PostgreSQL.
 
-This project demonstrates how to design and implement a real-world backend system with customers, plans, subscriptions, and invoices, using modern Python tooling and **containerized infrastructure**, both **locally** and **in the cloud (AWS)**.
+This project demonstrates how to design and implement a real-world backend system with customers, plans, subscriptions, and invoices, using modern Python tooling and containerized infrastructure.
 
----
+The service is deployed automatically using the infrastructure defined here:
+https://github.com/abir1985-devops/billing-infrastructure
 
-## 🚀 Live Demo (AWS EC2)
+🚀 Live Demo
+Swagger UI:
+http://63.177.100.85/docs
 
-The application is currently deployed on **AWS EC2** and publicly accessible.
+Health check:
+http://63.177.100.85/health
 
-- **Swagger UI:**  
-  http://16.171.172.53:8000/docs
+⚠️ Demo environment. The public IP may change if the EC2 instance is recreated.
 
-- **Health check:**  
-  http://16.171.172.53:8000/health
+✨ Features
+Customer management
+Subscription plans (monthly billing)
+Subscriptions with business rules:
+One active subscription per customer
+Automatic invoice generation on subscription creation
+Relational data model with PostgreSQL
+Database migrations with Alembic
+Containerized development and automated cloud deployment
 
-> ⚠️ This is a demo environment for learning and evaluation purposes.  
-> The public IP may change if the EC2 instance is restarted.
+🧱 Tech Stack
+Backend
+Python 3.12
+FastAPI
+SQLAlchemy
+Pydantic
 
----
+Database
+PostgreSQL
+Alembic migrations
 
-## ✨ Features
+DevOps / Infrastructure
+Docker
+Docker Compose
+AWS EC2
+Automated CI/CD deployment
 
-- Customer management
-- Subscription plans (monthly billing)
-- Subscriptions with business rules:
-  - One active subscription per customer
-  - Automatic invoice generation on subscription creation
-- Relational data model with PostgreSQL
-- Database migrations with Alembic
-- Containerized development and deployment
-- Cloud deployment on AWS EC2
-
----
-
-## 🧱 Tech Stack
-
-### Backend
-- Python 3.12
-- FastAPI
-- SQLAlchemy
-- Pydantic
-
-### Database
-- PostgreSQL
-- Alembic migrations
-
-### DevOps / Infrastructure
-- Docker
-- Docker Compose
-- AWS EC2 (Amazon Linux)
-- Linux networking & security groups
-
----
-
-## 🗂️ Domain Model (simplified)
-
-- **Customer**
-- **Plan**
-- **Subscription**
-- **Invoice**
+🗂️ Domain Model (simplified)
+Customer
+Plan
+Subscription
+Invoice
 
 A subscription links a customer to a plan and automatically generates invoices for each billing period.
 
----
+🚀 Running the project locally
 
-## 🚀 Running the project locally
+Prerequisites
+Docker
+Docker Compose
 
-### Prerequisites
-- Docker
-- Docker Compose
-
-### Start the application
-```bash
+Start the application
 docker compose up --build
-```
 
-### API access
-- API base URL: http://localhost:8000
-- Swagger UI: http://localhost:8000/docs
-- Health check: http://localhost:8000/health
+API access
+API base URL: http://localhost:8000
+Swagger UI: http://localhost:8000/docs
+Health check: http://localhost:8000/health
 
----
+☁️ Deployment
 
-## ☁️ Deployment (AWS EC2)
+The application is deployed automatically through CI/CD.  
+The server pulls a pre-built container image and restarts services without manual intervention.
 
-This project is deployed on an **AWS EC2 instance** using Docker and Docker Compose.
+Running services
+api – FastAPI application served by Uvicorn
+postgres – PostgreSQL database with persistent storage
+nginx – reverse proxy exposing the API
 
-### Architecture
-- AWS EC2 (Amazon Linux)
-- Docker & Docker Compose
-- FastAPI API container
-- PostgreSQL container with persistent volume
-- Private Docker network between services
+Health & documentation
+Health endpoint: GET /health
+Swagger UI: /docs
 
-### Deployment overview
-1. Provisioned an EC2 instance and configured security groups (SSH + API port).
-2. Installed Docker and Docker Compose on the server.
-3. Built and ran the application using a production Docker Compose configuration.
-4. PostgreSQL runs internally and is not exposed publicly.
-5. API is exposed via the EC2 public IP on port `8000`.
+🔍 Example flow
+Create a customer
+Create a subscription plan
+Create a subscription for the customer
+An invoice is automatically generated
+List invoices by customer
 
-### Running services
-- `api` – FastAPI application served by Uvicorn
-- `postgres` – PostgreSQL database with persistent storage
+All steps can be tested directly via Swagger UI.
 
-### Health & documentation
-- Health endpoint: `GET /health`
-- Swagger UI: `/docs`
+🧪 Database migrations
 
----
-
-## 🔍 Example flow
-
-1. Create a customer
-2. Create a subscription plan
-3. Create a subscription for the customer
-4. An invoice is automatically generated
-5. List invoices by customer
-
-All steps can be tested directly via **Swagger UI**.
-
----
-
-## 🧪 Database migrations
-
-### Generate a new migration
-```bash
+Generate a new migration
 docker compose run --rm api alembic revision --autogenerate -m "migration message"
-```
 
-### Apply migrations
-```bash
+Apply migrations
 docker compose run --rm api alembic upgrade head
-```
 
----
-
-## 🧠 Design decisions
-
-- UUIDs are used as primary keys for public-safe identifiers
-- Integer cents are used for monetary values to avoid floating-point errors
-- Subscription and invoice creation happens in a single database transaction
-- A fixed 30-day billing period is used for simplicity in the initial version
-
----
+🧠 Design decisions
+UUIDs are used as primary keys for public-safe identifiers
+Integer cents are used for monetary values to avoid floating-point errors
+Subscription and invoice creation happens in a single database transaction
+A fixed 30-day billing period is used for simplicity in the initial version
