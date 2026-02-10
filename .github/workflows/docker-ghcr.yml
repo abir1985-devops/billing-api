@@ -1,4 +1,4 @@
-name: Build and push Docker image (GHCR)
+name: Build, push Docker image (GHCR) and deploy to k3s
 
 on:
   workflow_run:
@@ -13,8 +13,12 @@ permissions:
 
 jobs:
   build-and-push:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }} 
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+
+    outputs:
+      IMAGE: ${{ steps.meta.outputs.IMAGE }}
+      SHA_TAG: ${{ steps.meta.outputs.SHA_TAG }}
 
     steps:
       - name: Checkout
@@ -42,3 +46,23 @@ jobs:
         run: |
           docker push ${{ steps.meta.outputs.IMAGE }}:latest
           docker push ${{ steps.meta.outputs.IMAGE }}:${{ steps.meta.outputs.SHA_TAG }}
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG_BASE64 }}" | base64 -d > ~/.kube/config
+
+      - name: Deploy new image (immutable SHA tag)
+        run: |
+          kubectl -n billing set image deployment/billing-api \
+            billing-api=${{ needs.build-and-push.outputs.IMAGE }}:${{ needs.build-and-push.outputs.SHA_TAG }}
+
+          kubectl -n billing rollout status deployment/billing-api --timeout=180s
