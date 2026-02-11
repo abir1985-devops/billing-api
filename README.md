@@ -25,11 +25,20 @@ and full observability.
 
 ![Architecture Diagram](screenshots/architecture_diagram.png)
 
-High-level flow:
+### Flow Explanation
 
-User → Traefik Ingress → billing-api → PostgreSQL\
-Prometheus scrapes `/metrics` → Grafana dashboards\
-GitHub Actions builds and deploys automatically
+1.  Code push triggers **GitHub Actions**
+2.  Docker image is built and pushed to **GHCR**
+3.  Kubernetes pulls the image and performs a rolling update
+4.  Traffic flows:
+    -   User → Traefik Ingress
+    -   Ingress → Service
+    -   Service → Deployment → Pod
+    -   Pod → PostgreSQL (StatefulSet + PVC)
+5.  Prometheus scrapes `/metrics` via ServiceMonitor
+6.  Grafana visualizes metrics from Prometheus
+
+
 
 ------------------------------------------------------------------------
 
