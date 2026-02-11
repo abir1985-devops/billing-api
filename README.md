@@ -23,7 +23,7 @@ and full observability.
 
 ## 📐 Architecture Diagram
 
-![Architecture Diagram](architecture_diagram.png)
+![Architecture Diagram](screenshots/architecture_diagram.png)
 
 High-level flow:
 
@@ -46,11 +46,11 @@ collects request and latency metrics.
 
 ### Requests per Second (RPS)
 
-![RPS Panel](grafana_rps.png)
+![RPS Panel](screenshots/grafana_rps.png)
 
 ### p95 Latency
 
-![Latency p95 Panel](Requests_per_second(RPS).png)
+![Latency p95 Panel](screenshots/grafana_latency_p95.png)
 
 These dashboards visualize real-time traffic and performance signals
 from the running Kubernetes cluster.
