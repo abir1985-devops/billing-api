@@ -1,103 +1,94 @@
 # Billing API
 
-A backend service for subscription-based billing, built with FastAPI and PostgreSQL.
+A subscription-based billing backend built with **FastAPI** and
+**PostgreSQL**, designed with production-ready deployment and
+observability in mind.
 
-This project demonstrates how to design and implement a real-world backend system with customers, plans, subscriptions, and invoices, using modern Python tooling and containerized infrastructure.
+------------------------------------------------------------------------
 
-The service is deployed automatically using the infrastructure defined here:
-https://github.com/abir1985-devops/billing-infrastructure
+## 🚀 Live Demo
 
-🚀 Live Demo
-Swagger UI:
-http://63.177.100.85/docs
+Swagger UI\
+http://82.165.138.175/docs
 
-Health check:
-http://63.177.100.85/health
+Health check\
+http://82.165.138.175/health
 
-⚠️ Demo environment. The public IP may change if the EC2 instance is recreated.
+------------------------------------------------------------------------
 
-✨ Features
-Customer management
-Subscription plans (monthly billing)
-Subscriptions with business rules:
-One active subscription per customer
-Automatic invoice generation on subscription creation
-Relational data model with PostgreSQL
-Database migrations with Alembic
-Containerized development and automated cloud deployment
+# 🧱 Architecture Overview
 
-🧱 Tech Stack
-Backend
-Python 3.12
-FastAPI
-SQLAlchemy
-Pydantic
+The application runs on a Kubernetes (k3s) cluster with automated CI/CD
+and full observability.
 
-Database
-PostgreSQL
-Alembic migrations
+## 📐 Architecture Diagram
 
-DevOps / Infrastructure
-Docker
-Docker Compose
-AWS EC2
-Automated CI/CD deployment
+![Architecture Diagram](architecture_diagram.png)
 
-🗂️ Domain Model (simplified)
-Customer
-Plan
-Subscription
-Invoice
+High-level flow:
 
-A subscription links a customer to a plan and automatically generates invoices for each billing period.
+User → Traefik Ingress → billing-api → PostgreSQL\
+Prometheus scrapes `/metrics` → Grafana dashboards\
+GitHub Actions builds and deploys automatically
 
-🚀 Running the project locally
+------------------------------------------------------------------------
 
-Prerequisites
-Docker
-Docker Compose
+# 📊 Monitoring & Observability
 
-Start the application
-docker compose up --build
+The application exposes Prometheus metrics at:
 
-API access
-API base URL: http://localhost:8000
-Swagger UI: http://localhost:8000/docs
-Health check: http://localhost:8000/health
+    /metrics
 
-☁️ Deployment
+Prometheus discovers the service via a **ServiceMonitor** resource and
+collects request and latency metrics.
 
-The application is deployed automatically through CI/CD.  
-The server pulls a pre-built container image and restarts services without manual intervention.
+## 📸 Grafana Dashboard Screenshots
 
-Running services
-api – FastAPI application served by Uvicorn
-postgres – PostgreSQL database with persistent storage
-nginx – reverse proxy exposing the API
+### Requests per Second (RPS)
 
-Health & documentation
-Health endpoint: GET /health
-Swagger UI: /docs
+![RPS Panel](grafana_rps.png)
 
-🔍 Example flow
-Create a customer
-Create a subscription plan
-Create a subscription for the customer
-An invoice is automatically generated
-List invoices by customer
+### p95 Latency
 
-All steps can be tested directly via Swagger UI.
+![Latency p95 Panel](grafana_latency_p95.png)
 
-🧪 Database migrations
+These dashboards visualize real-time traffic and performance signals
+from the running Kubernetes cluster.
 
-Generate a new migration
-docker compose run --rm api alembic revision --autogenerate -m "migration message"
+------------------------------------------------------------------------
 
-Apply migrations
-docker compose run --rm api alembic upgrade head
+# 🔁 CI/CD Pipeline
 
-🧠 Design decisions
-UUIDs are used as primary keys for public-safe identifiers
-Integer cents are used for monetary values to avoid floating-point errors
-Subscription and invoice creation happens in a single database transaction
-A fixed 30-day billing period is used for simplicity in the initial version
+On every push:
+
+1.  Docker image is built
+2.  Image is pushed to GitHub Container Registry
+3.  Kubernetes deployment is updated
+4.  Rolling update is triggered automatically
+
+Deployment is fully automated without manual server access.
+
+------------------------------------------------------------------------
+
+# 🧱 Tech Stack
+
+Backend: - Python 3.12 - FastAPI - SQLAlchemy - Pydantic
+
+Database: - PostgreSQL - Alembic
+
+Infrastructure & DevOps: - Docker - GitHub Actions - GitHub Container
+Registry - Kubernetes (k3s) - Traefik Ingress - Prometheus - Grafana
+
+------------------------------------------------------------------------
+
+# 🗂️ Domain Model
+
+-   Customer
+-   Plan
+-   Subscription
+-   Invoice
+
+A subscription links a customer to a plan and automatically generates
+invoices per billing cycle.
+
+------------------------------------------------------------------------
