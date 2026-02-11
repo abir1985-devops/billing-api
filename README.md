@@ -50,7 +50,7 @@ collects request and latency metrics.
 
 ### p95 Latency
 
-![Latency p95 Panel](grafana_latency_p95.png)
+![Latency p95 Panel](Requests_per_second(RPS).png)
 
 These dashboards visualize real-time traffic and performance signals
 from the running Kubernetes cluster.
